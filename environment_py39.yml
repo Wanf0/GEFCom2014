@@ -1,0 +1,56 @@
+# Conda environment for GEFCom2014 analysis (Python 3.9).
+# This environment targets Python 3.9 so the AWehenkel/Normalizing-Flows
+# package (which restricts Python < 3.10 in published metadata) can be
+# installed from GitHub. The file pins core packages for reproducibility.
+#
+# Usage:
+#   mamba env create -f environment_py39.yml
+#   conda activate GEFCom2014-py39
+#
+# After creation (recommended):
+#   conda env export --name GEFCom2014-py39 --no-builds > env_no_builds.yml
+#   conda list --name GEFCom2014-py39 --explicit > spec-file.txt
+#
+# GPU note:
+#   This YAML installs a CPU-only PyTorch by default. To enable GPU support,
+#   replace the `pytorch` + `cpuonly` lines with the appropriate GPU entries
+#   (e.g., pytorch=2.2.0 and pytorch-cuda=12.1) and ensure your NVIDIA driver
+#   matches the chosen CUDA toolkit.
+name: GEFCom2014-py39
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.9
+  # Core scientific stack (pinned)
+  - numpy=1.23.5
+  - pandas=1.5.3
+  - matplotlib=3.6.3
+  - seaborn=0.12.2
+  - scipy=1.9.3
+  - statsmodels=0.13.5
+  - scikit-learn=1.1.3
+  # Notebook / REPL
+  - jupyterlab=3.6.3
+  - ipython=8.6.0
+  - ipykernel
+  # Utilities
+  - networkx=2.8.8
+  - xlrd=2.0.1
+  # PyTorch (CPU default). Replace with GPU entries if you need CUDA support.
+  - pytorch=2.0.1
+  - cpuonly
+  - pip
+  - pip:
+    # pip-only or PyPI packages referenced by the project
+    - umnn
+    - numpyencoder
+    - copulas
+    - wandb
+    - plotly
+    - kaleido
+    - tqdm
+    # Normalizing-Flows from GitHub (editable install). Use the package project
+    # name 'normalizingflows' in the egg fragment to avoid metadata mismatch.
+    - "git+https://github.com/AWehenkel/Normalizing-Flows.git#egg=normalizingflows"

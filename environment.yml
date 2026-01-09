@@ -1,0 +1,55 @@
+# Minimal CPU-only conda environment to run the GEFCom2014 solar analysis and produce plots.
+# This file intentionally avoids installing the AWehenkel/Normalizing-Flows GitHub repo
+# during env creation to prevent TLS / Python-version / build issues.
+#
+# Recommended usage:
+# 1) Prefer mamba for speed/reliability:
+#      mamba env create -f environment_cpu_run.yml
+#    or with conda:
+#      conda env create -f environment_cpu_run.yml
+# 2) Activate:
+#      conda activate GEFCom2014-run
+# 3) Quick verification:
+#      python -c "import sys, torch, numpy, pandas; print(sys.version.split()[0], torch.__version__, numpy.__version__, pandas.__version__)"
+#
+name: GEFCom2014
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  # core scientific stack (reasonable pinned versions for 3.11)
+  - numpy=1.25.2
+  - pandas=2.1.2
+  - matplotlib=3.7.1
+  - seaborn=0.12.2
+  - scipy=1.11.3
+  - statsmodels=0.14.0
+  - scikit-learn=1.3.2
+  # notebook / kernel
+  - jupyterlab=4.2.3
+  - ipykernel
+  - ipython>=8.16
+  # utilities
+  - networkx=3.1
+  - xlrd=2.0.1
+  - tqdm
+  # PyTorch CPU build from conda-forge (avoid pytorch-channel Intel runtime issues)
+  - pytorch=2.2.0
+  # Keep environment CPU-only (no cudatoolkit); omit 'cpuonly' marker to avoid channel-specific issues
+  - pip
+  - pip:
+    # small set of pip packages useful for plotting, progress, and alternative NF lib
+    - plotly
+    - kaleido
+    - nflows        # alternative Normalizing Flow library on PyPI (compatible with modern Python)
+    - wandb        # optional (can remove if not used)
+    - umnn         # optional; if this fails, remove or install later
+    - numpyencoder  # optional; may be unused depending on code
+# Notes:
+# - This YAML targets reliable conda-forge binary builds. If you prefer Python 3.9 / need
+#   the original Normalizing-Flows repo, consider creating a separate py39 env and
+#   installing the GitHub repo there (or install a local wheel).
+# - If mamba is available, use mamba to create the env (faster dependency resolver).
+# - After env creation, if any pip installs fail, re-run pip install for that package inside
+#   the activated env; for network/TLS issues, download wheels externally and install locally.
